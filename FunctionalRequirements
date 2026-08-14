@@ -1,0 +1,369 @@
+# LIGMA — Functional Requirements Specification
+
+**Project:** Let’s Integrate Groups, Manage Anything (LIGMA)
+**Type:** Real-Time Collaborative Workspace
+
+---
+
+# 1. Introduction
+
+## 1.1 Purpose
+
+This document defines the functional requirements for LIGMA, a real-time collaborative workspace that bridges ideation (canvas) and execution (task board) by automatically extracting actionable insights from user input.
+
+---
+
+## 1.2 Scope
+
+The system enables multiple users to collaborate on an infinite canvas, create and manipulate nodes, and automatically convert ideas into structured tasks using an intent-aware processing layer.
+
+---
+
+# 2. User Management
+
+## 2.1 Authentication
+
+* The system shall allow users to register with:
+
+  * Name
+  * Email
+  * Password
+* The system shall allow secure login and logout.
+* The system shall maintain authenticated sessions using tokens (JWT or equivalent).
+
+---
+
+## 2.2 Roles
+
+The system shall support the following roles:
+
+* Lead
+* Contributor
+* Viewer
+
+---
+
+## 2.3 Role Assignment
+
+* The system shall assign roles per workspace/session.
+* The system shall allow dynamic role updates without requiring a page reload.
+
+---
+
+## 2.4 Session Access
+
+* Users shall be able to:
+
+  * Create a new session
+  * Join an existing session via link or session ID
+
+---
+
+# 3. Canvas Functionality
+
+## 3.1 Infinite Canvas
+
+* The system shall provide:
+
+  * Infinite scrolling canvas
+  * Zoom in/out functionality
+  * Smooth panning
+
+---
+
+## 3.2 Node Creation
+
+Users shall be able to create:
+
+* Sticky notes
+* Text blocks
+* Shapes (rectangle, circle, etc.)
+* Freehand drawings
+
+---
+
+## 3.3 Node Properties
+
+Each node shall contain:
+
+* Unique identifier (node_id)
+* Type (text, shape, sticky, drawing)
+* Content (text or drawing data)
+* Position (x, y coordinates)
+* Size (width, height)
+* Author (user_id)
+* Timestamp
+
+---
+
+## 3.4 Node Operations
+
+Users shall be able to:
+
+* Create nodes
+* Move nodes
+* Resize nodes
+* Edit content
+* Delete nodes
+
+---
+
+## 3.5 Node Addressability
+
+* Each node shall be independently addressable.
+* Each node shall be retrievable using its unique ID.
+
+---
+
+# 4. Real-Time Collaboration
+
+## 4.1 Multi-User Editing
+
+* The system shall allow multiple users to edit the canvas simultaneously.
+* Changes shall propagate to all users in real time (≤ 2 seconds).
+
+---
+
+## 4.2 Delta Updates
+
+* The system shall transmit only incremental changes (deltas), not full canvas state.
+
+---
+
+## 4.3 Cursor Presence
+
+* The system shall display:
+
+  * Each user’s cursor
+  * User label (name or ID)
+* Cursor positions shall update in real time.
+
+---
+
+# 5. Conflict Resolution
+
+## 5.1 Concurrent Editing
+
+* The system shall handle simultaneous edits on the same node.
+
+---
+
+## 5.2 Merge Strategy
+
+* The system shall implement a conflict resolution mechanism (e.g., CRDT or OT).
+* The system shall ensure consistent merged output across all clients.
+
+---
+
+## 5.3 State Consistency
+
+* All clients shall eventually converge to the same state.
+* No updates shall be lost during concurrent edits.
+
+---
+
+# 6. Intent-Aware Task Extraction
+
+## 6.1 Intent Classification
+
+The system shall classify node content into:
+
+* Action Item
+* Decision
+* Open Question
+* Reference
+
+---
+
+## 6.2 Processing Time
+
+* Intent classification shall occur within 3 seconds of content update.
+
+---
+
+## 6.3 Automatic Task Creation
+
+* Nodes classified as "Action Item" shall automatically generate tasks.
+
+---
+
+## 6.4 Task Metadata
+
+Each task shall include:
+
+* task_id
+* node_id (reference)
+* author
+* timestamp
+
+---
+
+## 6.5 Data Integrity
+
+* Tasks shall not duplicate node content.
+* Tasks shall maintain references to original nodes.
+
+---
+
+# 7. Task Board
+
+## 7.1 Task Display
+
+* The system shall display a live-updating list of tasks.
+
+---
+
+## 7.2 Navigation
+
+* Clicking a task shall:
+
+  * Navigate to the associated canvas node
+  * Highlight or focus the node
+
+---
+
+## 7.3 Real-Time Updates
+
+* Task board shall update across all users without reload.
+
+---
+
+# 8. Node-Level Access Control (RBAC)
+
+## 8.1 Node Permissions
+
+* Each node shall maintain its own access control list (ACL).
+
+---
+
+## 8.2 Permission Types
+
+Permissions shall include:
+
+* View
+* Edit
+* Comment
+* Lock
+
+---
+
+## 8.3 Enforcement
+
+* Permissions shall be enforced:
+
+  * On the frontend (UI restrictions)
+  * On the backend (server-side validation)
+
+---
+
+## 8.4 Dynamic Updates
+
+* Permission changes shall take effect immediately without reload.
+
+---
+
+# 9. Append-Only Event Log
+
+## 9.1 Event Storage
+
+* Every mutation shall be stored as an immutable event.
+
+---
+
+## 9.2 Event Types
+
+Events shall include:
+
+* NodeCreated
+* NodeUpdated
+* NodeDeleted
+* PermissionChanged
+
+---
+
+## 9.3 Immutability
+
+* Events shall never be modified or deleted.
+
+---
+
+## 9.4 Event Viewer
+
+* The system shall display:
+
+  * Event type
+  * Timestamp
+  * User ID
+
+---
+
+# 10. WebSocket Management
+
+## 10.1 Connection Handling
+
+* The system shall maintain persistent WebSocket connections.
+
+---
+
+## 10.2 Broadcast System
+
+* Updates shall be broadcast to all connected clients efficiently.
+
+---
+
+## 10.3 Reconnection Handling
+
+* The system shall detect disconnections and allow reconnection.
+
+---
+
+## 10.4 Event Replay
+
+* On reconnection:
+
+  * The system shall send only missed events.
+  * Clients shall provide last received event ID.
+
+---
+
+# 11. Deployment Requirements
+
+## 11.1 Hosting
+
+* Backend shall be deployed on Render.
+
+---
+
+## 11.2 Accessibility
+
+* The system shall be publicly accessible via URL.
+
+---
+
+## 11.3 Demo Readiness
+
+* The deployed system shall support live demonstration.
+
+---
+
+# 12. Optional Features (Bonus)
+
+## 12.1 Time-Travel Replay
+
+* The system shall allow replay of session history using stored events.
+
+---
+
+## 12.2 Presence Heatmap
+
+* The system shall visualize areas with high user activity.
+
+---
+
+## 12.3 AI Summary Export
+
+* The system shall generate structured summaries of sessions.
+
+---
+
+# END OF DOCUMENT

@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fluxnote — Blueprint Retro Zine design system. All colors HSL. */
+
+@layer base {
+  :root {
+    --background: 44 60% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 224 76% 48%;
+    --primary-foreground: 44 60% 98%;
+    --primary-glow: 217 91% 60%;
+
+    --secondary: 220 30% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 30% 95%;
+    --muted-foreground: 215 16% 42%;
+
+    --accent: 187 85% 53%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 160 84% 39%;
+    --warning: 38 92% 50%;
+    --info: 224 76% 48%;
+    --coral: 350 95% 67%;
+    --indigo: 244 75% 53%;
+    --lime: 84 81% 56%;
+
+    --intent-action: 224 76% 48%;
+    --intent-decision: 244 75% 53%;
+    --intent-question: 38 92% 50%;
+    --intent-reference: 160 60% 38%;
+
+    --sticky-yellow: 48 96% 78%;
+    --sticky-pink: 350 95% 84%;
+    --sticky-mint: 150 70% 80%;
+    --sticky-sky: 200 90% 82%;
+
+    --border: 222 30% 88%;
+    --input: 222 30% 88%;
+    --ring: 224 76% 48%;
+
+    --radius: 0.875rem;
+
+    --gradient-blueprint: linear-gradient(135deg, hsl(224 76% 48%), hsl(244 75% 53%));
+    --gradient-paper: radial-gradient(ellipse at top, hsl(44 60% 99%), hsl(220 30% 95%));
+    --gradient-glow: radial-gradient(circle at center, hsl(224 76% 48% / 0.18), transparent 60%);
+
+    --shadow-sm: 0 1px 2px hsl(224 60% 20% / 0.06);
+    --shadow-md: 0 6px 20px -8px hsl(224 60% 30% / 0.18);
+    --shadow-lg: 0 24px 60px -20px hsl(224 60% 25% / 0.28);
+    --shadow-sticky: 2px 4px 0 hsl(222 47% 11% / 0.08), 0 8px 24px -8px hsl(224 60% 30% / 0.25);
+    --shadow-glow: 0 0 0 4px hsl(224 76% 48% / 0.18);
+
+    --transition-base: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    --sidebar-background: 44 60% 98%;
+    --sidebar-foreground: 222 30% 25%;
+    --sidebar-primary: 224 76% 48%;
+    --sidebar-primary-foreground: 44 60% 98%;
+    --sidebar-accent: 220 30% 94%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 222 30% 88%;
+    --sidebar-ring: 224 76% 48%;
+  }
+
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 9%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 187 85% 53%;
+    --accent-foreground: 222 47% 9%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32% 20%;
+    --input: 217 32% 20%;
+    --ring: 217 91% 60%;
+    --sidebar-background: 222 47% 9%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 47% 9%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 20%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .font-hand { font-family: 'Caveat', cursive; }
+  .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+}
+
+@layer utilities {
+  .bg-blueprint-grid {
+    background-image:
+      linear-gradient(hsl(var(--primary) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .bg-blueprint-grid-strong {
+    background-image:
+      linear-gradient(hsl(var(--primary) / 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.18) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .bg-dot-grid {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.14) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .bg-paper {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(hsl(var(--foreground) / 0.025) 1px, transparent 1px),
+      radial-gradient(hsl(var(--foreground) / 0.02) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 1px;
+  }
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+  .text-gradient-blueprint {
+    background: var(--gradient-blueprint);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .shadow-sticky { box-shadow: var(--shadow-sticky); }
+  .shadow-elegant { box-shadow: var(--shadow-lg); }
+  .shadow-soft { box-shadow: var(--shadow-md); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+
+  .underline-marker {
+    background-image: linear-gradient(transparent 65%, hsl(var(--accent) / 0.55) 65%, hsl(var(--accent) / 0.55) 92%, transparent 92%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 0 0.15em;
+  }
+  .underline-coral {
+    background-image: linear-gradient(transparent 65%, hsl(var(--coral) / 0.55) 65%, hsl(var(--coral) / 0.55) 92%, transparent 92%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 0 0.15em;
+  }
+
+  .scribble-underline {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'%3E%3Cpath d='M2 8 Q40 1 80 7 T160 6 T198 8' fill='none' stroke='%231D4ED8' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    background-size: 100% 8px;
+    padding-bottom: 8px;
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.5); }
+    70% { box-shadow: 0 0 0 12px hsl(var(--primary) / 0); }
+    100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+  }
+  .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .animate-float { animation: float 4s ease-in-out infinite; }
+
+  @keyframes draw-in {
+    from { stroke-dashoffset: 600; }
+    to { stroke-dashoffset: 0; }
+  }
+  .animate-draw { stroke-dasharray: 600; animation: draw-in 2.4s ease-out forwards; }
+}
+
+@layer components {
+  .stamp {
+    @apply inline-flex items-center gap-1 rounded-md border-2 border-current px-2 py-0.5 font-hand uppercase tracking-wider;
+    transform: rotate(-3deg);
+  }
+  .tape {
+    position: absolute;
+    height: 18px;
+    width: 56px;
+    background: hsl(var(--warning) / 0.45);
+    border: 1px solid hsl(var(--warning) / 0.3);
+    top: -8px; left: 16px;
+    transform: rotate(-4deg);
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);
+  }
+  .zine-label {
+    @apply font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}

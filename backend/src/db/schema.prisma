@@ -1,0 +1,156 @@
+// Define these models:
+//
+// User: id, name, email, passwordHash, role (Lead/Contributor/Viewer)
+//
+// Room: id, name, createdBy, createdAt
+//
+// Event: (THE CORE TABLE)
+//   id          Int @id @autoincrement
+//   type        String   (NODE_CREATED, NODE_UPDATED, etc.)
+//   payload     Json     (the actual delta data)
+//   userId      String
+//   roomId      String
+//   timestamp   DateTime @default(now())
+//   -- NO UPDATE, NO DELETE ever on this table --
+//
+// NodeAcl: nodeId, roomId, allowedRoles String[] 
+//
+// Task: id, text, authorId, nodeId, roomId, status, createdAt
+//   (auto-created by intentService, linked back to nodeId)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   // "Lead", "Contributor", "Viewer"
+  createdAt    DateTime @default(now())
+  
+  rooms        Room[]
+  tasks        Task[]
+  events       Event[]
+}
+
+model Room {
+  id        String   @id @default(uuid())
+  name      String
+  createdBy String
+  createdAt DateTime @default(now())
+  
+  creator   User      @relation(fields: [createdBy], references: [id])
+  events    Event[]
+  nodeAcls  NodeAcl[]
+  tasks     Task[]
+}
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  type      String   // NODE_CREATED, NODE_UPDATED, NODE_DELETED, LOCK_NODE, RESET, TASK_CREATED, CRDT_NODE_CREATED, CRDT_NODE_UPDATED, CRDT_NODE_DELETED, CRDT_NODE_MOVED, RBAC_VIOLATION
+  payload   Json     // The actual delta data
+  userId    String
+  roomId    String
+  timestamp DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id])
+  room      Room     @relation(fields: [roomId], references: [id])
+  
+  @@index([roomId, timestamp])
+}
+
+model NodeAcl {
+  id           String   @id @default(uuid())
+  nodeId       String   @unique
+  roomId       String
+  allowedRoles String[] // ["Lead", "Contributor"]
+  createdAt    DateTime @default(now())
+  
+  room         Room     @relation(fields: [roomId], references: [id])
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  text      String
+  authorId  String
+  nodeId    String
+  roomId    String
+  status    String   @default("todo") // "todo", "done"
+  createdAt DateTime @default(now())
+  
+  author    User     @relation(fields: [authorId], references: [id])
+  room      Room     @relation(fields: [roomId], references: [id])
+  
+  @@index([roomId])
+  @@index([nodeId])
+}
+
+model CanvasNode {
+  id         String   @id
+  roomId     String
+  type       String   // "sticky", "text", "rect", "circle", "freedraw", "arrow", etc.
+  x          Float    @default(0)
+  y          Float    @default(0)
+  width      Float?
+  height     Float?
+  rotation   Float    @default(0)
+  content    Json     @default("{}")  // { text: "...", fontSize: 14, etc. }
+  color      String?
+  locked     Boolean  @default(false)
+  intent     String?  // "action", "decision", "question", "reference"
+  taskStatus String?  // "todo", "in_progress", "done", "backlog"
+  assignee   String?
+  points     Json     @default("[]")  // For freedraw: [[x1,y1], [x2,y2], ...]
+  createdBy  String
+  createdAt  DateTime @default(now())
+  updatedBy  String
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([id, roomId])
+  @@index([roomId])
+  @@index([createdBy])
+}
+
+model RoomShare {
+  id         String   @id @default(uuid())
+  roomId     String   @unique @map("room_id")
+  createdBy  String   @map("created_by")
+  accessType String   @default("restricted") @map("access_type") // "anyone_with_link" or "restricted"
+  linkRole   String   @default("viewer") @map("link_role")     // "viewer", "contributor", "lead"
+  token      String   @unique @default(uuid())
+  expiresAt  DateTime? @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
+  invites    RoomShareInvite[]
+  
+  @@map("room_shares")
+}
+
+model RoomShareInvite {
+  id        String   @id @default(uuid())
+  roomId    String   @map("room_id")
+  shareId   String   @map("share_id")
+  invitedBy String   @map("invited_by")
+  email     String
+  userId    String?  @map("user_id")
+  role      String   @default("viewer") // "viewer", "contributor", "lead"
+  status    String   @default("pending") // "pending", "accepted", "revoked"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  share     RoomShare @relation(fields: [shareId], references: [id], onDelete: Cascade)
+  
+  @@unique([roomId, email])
+  @@index([roomId])
+  @@index([email])
+  @@index([userId])
+  @@map("room_share_invites")
+}
