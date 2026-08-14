@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { X, Eye, EyeOff, ArrowRight, Zap } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type Mode = "login" | "signup";
 
@@ -23,6 +24,21 @@ export function AuthModal({ open, defaultMode = "login", onClose }: AuthModalPro
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
+  const router = useRouter();
+
+  const handleDemo = () => {
+    const demoUser = {
+      id: "demo-user-001",
+      email: "demo@fluxnote.dev",
+      name: "Demo User",
+      role: "admin",
+      avatar_url: "",
+    };
+    localStorage.setItem("auth_token", "demo_token_placeholder");
+    localStorage.setItem("user", JSON.stringify(demoUser));
+    onClose();
+    router.push("/dashboard");
+  };
 
   // sync mode when prop changes
   useEffect(() => { setMode(defaultMode); }, [defaultMode]);
@@ -103,6 +119,15 @@ export function AuthModal({ open, defaultMode = "login", onClose }: AuthModalPro
             {mode === "login" ? "Sign in to your workspace." : "No credit card. Just a canvas."}
           </p>
         </div>
+
+        {/* Demo */}
+        <button
+          onClick={handleDemo}
+          className="w-full h-12 flex items-center justify-center gap-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-sm font-bold shadow-[3px_3px_0_hsl(var(--foreground))] hover:shadow-[1px_1px_0_hsl(var(--foreground))] hover:translate-x-[2px] hover:translate-y-[2px] mb-3"
+        >
+          <Zap className="h-4 w-4" />
+          Try Demo — no sign in needed
+        </button>
 
         {/* Google */}
         <button
