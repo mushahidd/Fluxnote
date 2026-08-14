@@ -354,7 +354,7 @@ export default function Settings() {
                     variant="outline"
                     onClick={async () => {
                       await logout();
-                      router.push("/auth");
+                      router.push("/");
                       toast({ title: "Account deleted" });
                     }}
                   >
