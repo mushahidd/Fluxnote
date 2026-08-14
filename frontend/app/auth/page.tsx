@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Sparkles, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Sparkles, ArrowRight, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export default function Auth() {
@@ -16,7 +17,22 @@ export default function Auth() {
   const [name, setName] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, register } = useAuth();
+  const { login, register, updateUser } = useAuth();
+  const router = useRouter();
+
+  const handleDemo = () => {
+    const demoUser = {
+      id: "demo-user-001",
+      email: "demo@fluxnote.dev",
+      name: "Demo User",
+      role: "admin",
+      avatar_url: "",
+    };
+    // Save demo auth directly to localStorage — no backend needed
+    localStorage.setItem("auth_token", "demo_token_placeholder");
+    localStorage.setItem("user", JSON.stringify(demoUser));
+    router.push("/dashboard");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,6 +167,15 @@ export default function Auth() {
               {isLogin ? "Enter your credentials to continue." : "No credit card. No setup call. Just a canvas."}
             </p>
           </div>
+
+          {/* Demo */}
+          <button
+            onClick={handleDemo}
+            className="w-full h-11 flex items-center justify-center gap-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-sm font-semibold shadow-[3px_3px_0_hsl(var(--foreground))] hover:shadow-[1px_1px_0_hsl(var(--foreground))] hover:translate-x-[2px] hover:translate-y-[2px]"
+          >
+            <Zap className="h-4 w-4" />
+            Try Demo — no sign in needed
+          </button>
 
           {/* Google */}
           <button
