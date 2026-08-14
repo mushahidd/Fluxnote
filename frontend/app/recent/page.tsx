@@ -29,7 +29,7 @@ export default function Recent() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      window.location.href = '/auth';
+      window.location.href = '/';
     }
   }, [user, authLoading]);
 
